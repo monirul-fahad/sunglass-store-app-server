@@ -26,5 +26,5 @@ This Is The Live Link of the Project. [Glassy Yard App](https://github.com/faceb
 - I created this app with react js.
 - Used Firebase for Log in system.
 - Used mongoDB for database.
-- used Herokoo for server site.
+- used Heroku for server site.
 - Also used Axios, React hook form, react icon.
