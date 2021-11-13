@@ -22,6 +22,7 @@ async function run() {
     const productCollection = database.collection("products");
     const orderCollection = database.collection("orders");
     const usersCollection = database.collection("users");
+    const reviewCollection = database.collection("reviews");
 
     //add api
     app.post("/products", async (req, res) => {
@@ -35,6 +36,19 @@ async function run() {
       const order = req.body;
       const result = await orderCollection.insertOne(order);
       res.json(result);
+    });
+    //add review
+    app.post("/reviews", async (req, res) => {
+      const review = req.body;
+      const result = await reviewCollection.insertOne(review);
+      res.json(result);
+    });
+
+    // get reviews
+    app.get("/reviews", async (req, res) => {
+      const cursor = reviewCollection.find({});
+      const allReviews = await cursor.toArray();
+      res.json(allReviews);
     });
 
     //add user info
@@ -74,13 +88,6 @@ async function run() {
       res.json(allOrders);
     });
 
-    // app.get("/orders/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: ObjectId(id) };
-    //   const userOrders = await orderCollection.findOne(query);
-    //   res.json(userOrders);
-    // });
-
     //get all products
     app.get("/products", async (req, res) => {
       const cursor = productCollection.find({});
@@ -94,6 +101,24 @@ async function run() {
         .find({ _id: ObjectId(req.params.id) })
         .toArray();
       res.send(result[0]);
+    });
+
+    //STATUS UPDATE
+    app.put("/orders/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          status: "Shipped",
+        },
+      };
+      const result = await orderCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.json(result);
     });
 
     // DELETE product API
